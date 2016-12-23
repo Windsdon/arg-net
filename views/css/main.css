@@ -1,0 +1,10 @@
+html, body, .content-wrapper {
+	min-height: 100%;
+	background-color: #ecf0f5;
+	-webkit-user-select: none;
+	user-select: none;
+}
+
+.main-sidebar {
+	padding-top: 0 !important;
+}
