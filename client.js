@@ -3,6 +3,7 @@
 process.env.DEBUG = 'client:*';
 
 let client = require('./lib/client/main.js');
+const debug = require('debug')('client:main');
 
 if (process.versions['electron']) {
 	/**
@@ -34,13 +35,15 @@ if (process.versions['electron']) {
 		}));
 
 		mainWindow = new BrowserWindow({
-			width: 900,
-			height: 600,
+			width: 1280,
+			height: 720,
 			minWidth: 900,
 			minHeight: 600,
 			title: 'Arg Net',
 			autoHideMenuBar: true
 		});
+
+		mainWindow.maximize();
 
 		mainWindow.setMenu(menu);
 
@@ -68,13 +71,15 @@ if (process.versions['electron']) {
 	});
 
 	electron.ipcMain.on('get-client', (event, arg) => {
-		event.returnValue = {
-			id: client.id,
-			uuid: client.uuid
-		};
+		event.returnValue = client._serializable();
 	});
 
 	electron.ipcMain.on('get-settings', (event, arg) => {
 		event.returnValue = client.getConfig();
+	});
+
+	client.on('update', (c) => {
+		debug('Client update');
+		mainWindow.webContents.send('client-update', c);
 	});
 }

@@ -1,0 +1,20 @@
+<div class="col-lg-6 col-md-12 col-sm-12 col-xs-12">
+	<div class="box box-default">
+		<div class="box-header with-border">
+			<i class="fa fa-gear"></i>
+			<h3 class="box-title">{{info.manifest.id}}</h3>
+		</div>
+		<div class="box-body" ng-switch="info.status">
+			<div class="callout callout-success" ng-switch-when="up-to-date">
+				<h4>Up-to-date</h4>
+			</div>
+			<div class="callout callout-warning" ng-switch-when="loading">
+				<h4>Loading</h4>
+			</div>
+			<div class="callout callout-info" ng-switch-when="updating">
+				<h4>Updating</h4>
+			</div>
+			<p ng-switch-when="'updating'"></p>
+		</div>
+	</div>
+</div>

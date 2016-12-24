@@ -37,6 +37,16 @@
 		}
 	});
 
+	app.directive('dashboardWorker', function () {
+		return {
+			restrict: 'E',
+			scope: {
+				info: '='
+			},
+			templateUrl: 'include/widget-worker.html'
+		}
+	});
+
 	app.run(function ($rootScope, $location) {
 		$rootScope.page = $location.url().match(/^\/([^/]*)/)[1];
 	});
@@ -61,33 +71,47 @@
 
 	});
 
-	app.controller('DashboardController', function ($scope, $routeParams) {
-		$scope.boxes = [
-			{
-				text: 'Active Projects',
-				bg: 'blue',
-				icon: 'stats-bars',
-				number: '0'
-			},
-			{
-				text: 'Tasks Pending',
-				bg: 'red',
-				icon: 'clipboard',
-				number: '0'
-			},
-			{
-				text: 'Tasks Running',
-				bg: 'yellow',
-				icon: 'loop',
-				number: '0'
-			},
-			{
-				text: 'Tasks Completed',
-				bg: 'green',
-				icon: 'checkmark-round',
-				number: '0'
+	app.controller('DashboardController', function ($scope, $routeParams, $rootScope, Client) {
+		this.boxWorkers = {
+			text: 'Workers',
+			bg: 'blue',
+			icon: 'stats-bars',
+			number: '0'
+		};
+		this.boxPending = {
+			text: 'Tasks Pending',
+			bg: 'red',
+			icon: 'clipboard',
+			number: '0'
+		};
+		this.boxRunning = {
+			text: 'Tasks Running',
+			bg: 'yellow',
+			icon: 'loop',
+			number: '0'
+		};
+		this.boxCompleted = {
+			text: 'Tasks Completed',
+			bg: 'green',
+			icon: 'checkmark-round',
+			number: '0'
+		};
+		$scope.boxes = [this.boxWorkers, this.boxPending, this.boxRunning, this.boxCompleted];
+		$scope.workers = {};
+
+		$rootScope.$watch(function () {
+			return Client.client;
+		}, () => {
+			try {
+				this.boxWorkers.number = Object.keys(Client.client.workers.workers).length;
+				// this.boxPending.number = Object.keys(Client.client.workers.workers).length;
+				// this.boxRunning.number = Object.keys(Client.client.tasks.running).length;
+				// this.boxCompleted.number = Object.keys(Client.client.workers.workers).length;
+				$scope.workers = Client.client.workers.workers;
+			} catch (err) {
+
 			}
-		];
+		})
 	});
 
 	app.controller('SettingsController', function ($scope, $routeParams, Settings, toastr) {
